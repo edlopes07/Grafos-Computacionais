@@ -126,8 +126,6 @@ def pathFind(v1, v2):
       break
 
     for aresta in arestas:
-      if aresta not in percurso:
-        percurso.append(aresta)
       if aresta[0] == atual:
         vizinho = aresta[1]
         if vizinho not in visitados:
