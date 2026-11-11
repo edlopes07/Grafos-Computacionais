@@ -138,6 +138,65 @@ def pathFind(v1, v2):
     return 'O percurso determinado é impossível.'
 
 
+def bfs(v):
+  if not arestas:
+    return "Não foi possível realizar uma busca.\nO grafo não possui arestas!"
+  visitados = []
+  fila = [v]
+
+  while len(fila) > 0:
+    print(f"Visitados: {visitados}")
+    print(f"Fila: {fila}")
+    atual = fila.pop(0)
+    if atual not in visitados:
+      visitados.append(atual)
+
+    for aresta in arestas:
+      if aresta[0] == atual:
+        vizinho = aresta[1]
+        if vizinho not in visitados:
+          fila.append(vizinho)
+  return f'{visitados}'
+
+
+def menor(inicio, destino):
+    if not arestas:
+        return "Não foi possível realizar a busca. \nO grafo não possui arestas!"
+
+    visitados = []
+
+    fila = [{
+        'vertice': inicio,
+        'caminho': [inicio]
+    }]
+
+    while len(fila) > 0:
+        print(f"Visitados: {visitados}")
+        print(f"Fila: {fila}")
+
+        atual = fila.pop(0)
+        vertice_atual = atual['vertice']
+        caminho_atual = atual['caminho']
+
+        if vertice_atual not in visitados:
+            visitados.append(vertice_atual)
+
+        if vertice_atual == destino:
+            return caminho_atual
+
+        for aresta in arestas:
+            if aresta[0] == vertice_atual:
+                vizinho = aresta[1]
+
+                if vizinho not in [item['vertice'] for item in fila] and vizinho not in visitados:
+                    fila.append({
+                        'vertice': vizinho,
+                        'caminho': caminho_atual + [vizinho]
+                    })
+
+    return "Não existe caminho entre esses vértices!"
+
+
 while True:
   dir = input(f"Seu grafo é direcionado? [S] ou [N]\n--> ")
   dir = dir.upper()
@@ -163,6 +222,8 @@ LISTA DE ARESTAS
 [4] Verificar possível aresta (de x para y)
 [5] Listar vizinhos de um vértice
 [6] Verificar se um determinado percurso é possível (de x para y)
+[7] Busca em largura (BFS)
+[8] Buscar menor caminho
 [0] Sair\n
 --> """)
 
@@ -276,6 +337,24 @@ LISTA DE ARESTAS
          print("Os vértices devem ser números inteiros e estarem na lista")
          continue
        print(pathFind(vertice1, vertice2))
+
+    case 7:
+      try:
+        v = vertices[0]
+      except:
+        print("Não há vértices disponíveis!")
+        continue
+      print(bfs(v))
+
+    case 8:
+      try:
+        print(f"\n Escolha o vértice de Início e de Destino desejados ({vertices})")
+        inicio = int(input("Início --> "))
+        destino = int(input("Destino --> "))
+      except:
+        print("Os vértices devem ser inteiros e estarem na lista")
+        continue
+      print(menor(inicio, destino))
 
     case 0:
       break
