@@ -154,7 +154,7 @@ def bfs(v):
     for aresta in arestas:
       if aresta[0] == atual:
         vizinho = aresta[1]
-        if vizinho not in visitados:
+        if vizinho not in visitados and vizinho not in fila:
           fila.append(vizinho)
   return f'{visitados}'
 
@@ -197,6 +197,27 @@ def menor(inicio, destino):
     return "Não existe caminho entre esses vértices!"
 
 
+def dfs(v):
+  if not arestas:
+    return "Não foi possível realizar uma busca.\nO grafo não possui arestas!"
+  visitados = []
+  pilha = [v]
+
+  while len(pilha) > 0:
+    print(f"Visitados: {visitados}")
+    print(f"Pilha: {pilha}")
+    atual = pilha.pop()
+    if atual not in visitados:
+      visitados.append(atual)
+
+    for aresta in arestas:
+      if aresta[0] == atual:
+        vizinho = aresta[1]
+        if vizinho not in visitados and vizinho not in pilha:
+          pilha.append(vizinho)
+  return f'{visitados}'
+
+
 while True:
   dir = input(f"Seu grafo é direcionado? [S] ou [N]\n--> ")
   dir = dir.upper()
@@ -223,7 +244,8 @@ LISTA DE ARESTAS
 [5] Listar vizinhos de um vértice
 [6] Verificar se um determinado percurso é possível (de x para y)
 [7] Busca em largura (BFS)
-[8] Buscar menor caminho
+[8] Buscar menor caminho (BFS)
+[9] Busca em profundidade (DFS)
 [0] Sair\n
 --> """)
 
@@ -355,6 +377,14 @@ LISTA DE ARESTAS
         print("Os vértices devem ser inteiros e estarem na lista")
         continue
       print(menor(inicio, destino))
+    
+    case 9:
+      try:
+        v = vertices[0]
+      except:
+        print("Não há vértices disponíveis!")
+        continue
+      print(dfs(v))
 
     case 0:
       break
