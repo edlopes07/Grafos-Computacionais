@@ -217,6 +217,36 @@ def dfs(v):
           pilha.append(vizinho)
   return f'{visitados}'
 
+def ciclos(inicio):
+  if not arestas:
+    return "Não foi possível realizar uma busca. \nO grafo não possui arestas!"
+  visitados = []
+  pilha = [{
+          'vertice': inicio,
+          'pai': None
+      }]
+  while len(pilha) > 0:
+      print(f"Visitados: {visitados}")
+      print(f"Pilha: {pilha}")
+      atual = pilha.pop()
+      vertice_atual = atual['vertice']
+      pai_atual = atual['pai']
+      if vertice_atual not in visitados:
+        visitados.append(vertice_atual)
+      vizinho = []
+      for aresta in arestas:
+        if aresta[0] == vertice_atual:
+          vizinho.append(aresta[1])
+      for vizinhos in vizinho:
+        if vizinhos not in visitados and vizinhos not in [item['vertice'] for item in pilha]:
+          pilha.append({
+          'vertice': vizinhos,
+          'pai': vertice_atual})
+        else:
+          if vizinhos != pai_atual:
+            return 'Ciclo detectado!'
+  return f'Nenhum ciclo detectado!'
+
 
 while True:
   dir = input(f"Seu grafo é direcionado? [S] ou [N]\n--> ")
@@ -385,6 +415,15 @@ LISTA DE ARESTAS
         print("Não há vértices disponíveis!")
         continue
       print(dfs(v))
+
+    case 10:
+        try:
+          print(f"\n Escolha o vértice de Início da detecção de ciclos ({vertices})")
+          inicio = int(input("--> "))
+        except:
+          print("Os vértices devem ser inteiros e estarem na lista")
+          continue
+        print(ciclos(inicio))
 
     case 0:
       break
