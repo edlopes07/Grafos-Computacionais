@@ -247,7 +247,6 @@ def ciclos(inicio):
             return 'Ciclo detectado!'
   return f'Nenhum ciclo detectado!'
 
-
 while True:
   dir = input(f"Seu grafo é direcionado? [S] ou [N]\n--> ")
   dir = dir.upper()
@@ -264,8 +263,10 @@ while True:
     case default:
       print("Direção inválida!")
 
+opcaoAdicional = "[10] Detectar ciclos (DFS)\n" if not direcionado else ""
+
 while True:
-  x = input("""
+  x = input(f"""
 LISTA DE ARESTAS
 [1] Manipular vértices
 [2] Manipular arestas
@@ -276,7 +277,7 @@ LISTA DE ARESTAS
 [7] Busca em largura (BFS)
 [8] Buscar menor caminho (BFS)
 [9] Busca em profundidade (DFS)
-[0] Sair\n
+{opcaoAdicional}[0] Sair\n
 --> """)
 
   match(int(x)):
