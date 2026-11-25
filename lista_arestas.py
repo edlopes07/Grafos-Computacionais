@@ -1,5 +1,6 @@
 arestas = []
 vertices = []
+peso = {}
 
 def exibir():
   for aresta in arestas:
@@ -41,8 +42,10 @@ def manipularAresta(v1, v2, tipo, isDirecionado):
     aresta2 = (v2, v1)
     if aresta not in arestas:
       arestas.append(aresta)
+      peso[aresta] = 1.0
       if not isDirecionado:
         arestas.append(aresta2)
+        peso[aresta2] = 1.0
     else:
       print(f"{aresta} já existe!")
       return
@@ -58,7 +61,14 @@ def manipularAresta(v1, v2, tipo, isDirecionado):
     arestas.remove(aresta)
     if not isDirecionado:
       arestas.remove(aresta2)
-
+  if tipo == 3:
+    aresta_atual = (v1, v2)
+    if aresta_atual not in arestas:
+      print(f"{aresta_atual} não existe!")
+      return
+    peso[aresta_atual] = float(input("Insira o peso da aresta: "))
+    if not isDirecionado:
+      peso[(v2, v1)] = peso[aresta_atual]
     return arestas
 
 
@@ -175,7 +185,7 @@ def menor(inicio, destino):
         print(f"Fila: {fila}")
 
         atual = fila.pop(0)
-        vertice_atual = atual['vertice']
+        vertice_atual = 	_atual = atual['vertice']
         caminho_atual = atual['caminho']
 
         if vertice_atual not in visitados:
@@ -247,6 +257,59 @@ def ciclos(inicio):
             return 'Ciclo detectado!'
   return f'Nenhum ciclo detectado!'
 
+def dijkstra(inicio, destino):
+  if not vertices:
+    return "Não foi possível realizar uma busca. \nGrafo vazio!"
+
+  processados = []
+  distancia = {}
+  anterior = {}
+
+  for vertice in vertices:
+    distancia[vertice] = float('inf')
+    anterior[vertice] = None
+
+  distancia[inicio] = 0
+
+  while len(processados) < len(vertices):
+    menor_dist = float('inf')
+    atual = None
+    for vertice in vertices:
+      if vertice not in processados and distancia[vertice] < menor_dist:
+          menor_dist = distancia[vertice]
+          atual = vertice
+
+    if atual is None or menor_dist == float('inf'):
+      break
+
+    processados.append(atual)
+
+    vizinhos = []
+    for aresta in arestas:
+      if aresta[0] == atual:
+        vizinhos.append(aresta[1])
+
+    for vizinho in vizinhos:
+      aresta = (atual, vizinho)
+      peso_aresta = peso.get(aresta)
+      calc_dist = distancia[atual] + peso_aresta
+
+      if calc_dist < distancia[vizinho]:
+        distancia[vizinho] = calc_dist
+        anterior[vizinho] = atual
+
+  if distancia[destino] == float('inf'):
+    return "Não existe caminho entre esses vértices."
+
+  caminho = []
+  atual = destino
+  while atual is not None:
+    caminho.insert(0, atual)
+    atual = anterior[atual]
+
+  return f"Caminho encontrado: {caminho} com distância total de: {distancia[destino]}"
+
+
 while True:
   dir = input(f"Seu grafo é direcionado? [S] ou [N]\n--> ")
   dir = dir.upper()
@@ -277,7 +340,8 @@ LISTA DE ARESTAS
 [7] Busca em largura (BFS)
 [8] Buscar menor caminho (BFS)
 [9] Busca em profundidade (DFS)
-{opcaoAdicional}[0] Sair\n
+{opcaoAdicional}[11] Caminho mais econômico (Dijkstra)
+[0] Sair\n
 --> """)
 
   match(int(x)):
@@ -318,6 +382,7 @@ LISTA DE ARESTAS
   MANIPULAÇÃO DE ARESTAS
   [1] Adicionar aresta
   [2] Remover aresta
+  [3] Adicionar peso
   [0] Voltar\n
   --> """)
       match(int(y)):
@@ -350,6 +415,21 @@ LISTA DE ARESTAS
             continue
           manipularAresta(vertice1, vertice2, 2, direcionado)
           exibir()
+
+        case 3:
+          try:
+            print(f"\nEscolha os vértices que compõem a aresta ({vertices})\nPesos atuais: {peso}")
+            if direcionado:
+              vertice1 = int(input("Origem --> "))
+              vertice2 = int(input("Destino --> "))
+            else:
+              vertice1 = int(input("--> "))
+              vertice2 = int(input("--> "))
+          except:
+            print("Os vértices devem ser um número inteiro.")
+            continue
+          manipularAresta(vertice1, vertice2, 3, direcionado)
+          print(peso)
 
         case 0:
           continue
@@ -408,7 +488,7 @@ LISTA DE ARESTAS
         print("Os vértices devem ser inteiros e estarem na lista")
         continue
       print(menor(inicio, destino))
-    
+
     case 9:
       try:
         v = vertices[0]
@@ -425,6 +505,16 @@ LISTA DE ARESTAS
           print("Os vértices devem ser inteiros e estarem na lista")
           continue
         print(ciclos(inicio))
+
+    case 11:
+      try:
+        print(f"\nEscolha o vértice de Início e de Destino desejados ({vertices})")
+        inicio = int(input("Início --> "))
+        destino = int(input("Destino --> "))
+      except:
+        print("Os vértices devem ser inteiros e estarem na lista")
+        continue
+      print(dijkstra(inicio, destino))
 
     case 0:
       break
