@@ -25,8 +25,10 @@ def manipularVertice(v, tipo):
       vertices.remove(v)
       atualizar = []
       for aresta in arestas:
-        if v not in aresta:
-          atualizar.append(aresta)
+          if v not in aresta:
+              atualizar.append(aresta)
+          else:
+              peso.pop(aresta, None)
       arestas = atualizar
 
       return arestas, vertices
@@ -59,8 +61,11 @@ def manipularAresta(v1, v2, tipo, isDirecionado):
       print(f"{aresta} não existe!")
       return
     arestas.remove(aresta)
+    peso.pop(aresta, None)
     if not isDirecionado:
-      arestas.remove(aresta2)
+        arestas.remove(aresta2)
+        peso.pop(aresta2, None)
+      
   if tipo == 3:
     aresta_atual = (v1, v2)
     if aresta_atual not in arestas:
@@ -90,11 +95,11 @@ def calcularGrau(isDirecionado):
 
   if not isDirecionado:
     for v in vertices:
-      grau = 0
-      for aresta in arestas:
-          if v in aresta:
-            grau += 1
-      print(f"Vértice {v}: {grau}")
+        grau = 0
+        for aresta in arestas:
+            if aresta[0] == v:
+                grau += 1
+        print(f"Vértice {v}: {grau}")
   else:
     for v in vertices:
       grauEnt = 0
@@ -108,17 +113,16 @@ def calcularGrau(isDirecionado):
 
 
 def listarvizinho(v):
-  if v not in vertices:
-    print("Vértice não existente!")
-  else:
-    vizinhos = []
+    if v not in vertices:
+        print("Vértice não existente!")
+    else:
+        vizinhos = []
 
-    for aresta in arestas:
-      if aresta[0] == v:
-        vizinhos.append(aresta[1])
-      if aresta[1] == v:
-        vizinhos.append(aresta[0])
-    print(f"Vértice {v} --> vizinhos: {vizinhos}")
+        for aresta in arestas:
+            if aresta[0] == v:
+                vizinhos.append(aresta[1])
+
+        print(f"Vértice {v} --> vizinhos: {vizinhos}")
 
 
 def pathFind(v1, v2):
@@ -151,6 +155,10 @@ def pathFind(v1, v2):
 def bfs(v):
   if not arestas:
     return "Não foi possível realizar uma busca.\nO grafo não possui arestas!"
+
+  if v not in vertices:
+    return "O vértice informado não existe!"
+    
   visitados = []
   fila = [v]
 
@@ -185,7 +193,7 @@ def menor(inicio, destino):
         print(f"Fila: {fila}")
 
         atual = fila.pop(0)
-        vertice_atual = 	_atual = atual['vertice']
+        vertice_atual = atual['vertice']
         caminho_atual = atual['caminho']
 
         if vertice_atual not in visitados:
@@ -210,6 +218,10 @@ def menor(inicio, destino):
 def dfs(v):
   if not arestas:
     return "Não foi possível realizar uma busca.\nO grafo não possui arestas!"
+
+  if v not in vertices:
+    return "O vértice informado não existe!"
+    
   visitados = []
   pilha = [v]
 
@@ -260,6 +272,9 @@ def ciclos(inicio):
 def dijkstra(inicio, destino):
   if not vertices:
     return "Não foi possível realizar uma busca. \nGrafo vazio!"
+
+  if inicio not in vertices or destino not in vertices:
+    return "Um ou ambos os vértices não existem!"
 
   processados = []
   distancia = {}
